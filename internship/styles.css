@@ -6,7 +6,6 @@
   --line: #cbc8bf;
   --orange: #ef5b2a;
   --orange-dark: #a93a14;
-  --blue: #1e4b67;
   --dark: #10171d;
   --max: 1380px;
 }
@@ -111,13 +110,6 @@ h1 {
 .project-number { color: var(--orange-dark); font: 500 .75rem/1 "DM Mono", monospace; }
 .project-index i { font-style: normal; }
 
-.metrics { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--blue); color: white; }
-.metrics div { min-height: 150px; padding: 28px max(24px, calc((100vw - var(--max)) / 8 + 15px)); display: flex; flex-direction: column; justify-content: flex-end; border-right: 1px solid #45677b; }
-.metrics div:last-child { border-right: 0; }
-.metrics strong { color: #ff784d; font-size: clamp(2.3rem, 4vw, 4rem); line-height: .9; letter-spacing: -.06em; }
-.metrics strong span { font-size: .42em; color: #aebfca; }
-.metrics > div > span { margin-top: 12px; color: #cbd6dc; font: .68rem/1.4 "DM Mono", monospace; text-transform: uppercase; letter-spacing: .07em; }
-
 .report { max-width: var(--max); margin: auto; padding: 0 28px 80px; background: color-mix(in srgb, var(--paper) 94%, transparent); }
 .report-section {
   display: grid;
@@ -182,8 +174,6 @@ footer a { color: white; }
   .byline { margin-top: 34px; }
   .project-index { padding: 0 20px; grid-template-columns: 1fr; }
   .project-index a { min-height: 92px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .metrics { grid-template-columns: 1fr 1fr; }
-  .metrics div { min-height: 116px; padding: 24px 20px; border-bottom: 1px solid #45677b; }
   .report { padding: 0 20px 60px; }
   .report-section { grid-template-columns: 1fr; gap: 18px; padding: 52px 0; scroll-margin-top: 64px; }
   .section-marker { position: static; display: flex; gap: 12px; }
