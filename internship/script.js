@@ -1,4 +1,6 @@
 const bar = document.getElementById("progress-bar");
+const menu = document.querySelector(".menu-toggle");
+const nav = document.getElementById("report-nav");
 const navLinks = [...document.querySelectorAll('nav a[href^="#"]')];
 const sections = navLinks.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 
@@ -13,6 +15,17 @@ function update() {
   }
   navLinks.forEach(link => link.classList.toggle("active", active && link.getAttribute("href") === "#" + active.id));
 }
+
+menu?.addEventListener("click", () => {
+  const open = nav.classList.toggle("open");
+  menu.setAttribute("aria-expanded", String(open));
+});
+
+navLinks.forEach(link => link.addEventListener("click", () => {
+  nav.classList.remove("open");
+  menu?.setAttribute("aria-expanded", "false");
+}));
+
 addEventListener("scroll", update, { passive: true });
 addEventListener("resize", update);
 update();
