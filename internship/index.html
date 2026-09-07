@@ -29,7 +29,7 @@
     <header class="hero" id="abstract">
       <div class="hero-intro">
         <h1>Robot Learning for Manipulation: Video-Action Models, Cable Insertion, and MolmoAct2 on reBot: Report 2026</h1>
-        <p class="dek">Teaching robot arms to do useful tasks, across four projects</p>
+        <p class="dek">Teaching robot arms to do useful tasks, across three projects </p>
         <p class="byline">Author: Pranav Saroha — Mentor: Dhruv Diddi</p>
       </div>
       <div class="hero-abstract">
@@ -45,7 +45,7 @@
           <h2>1. Introduction</h2>
           <p>Everything here is about getting robot arms to do tasks with various types of finetuned policies. I worked on three projects, they overlapped because training runs took days and hardware order took time, or simply data collection was a bit boring, so there was always something to switch to while I waited on something else.</p>
           <ul class="bullet-list">
-            <li><strong>Project 1 — AIC Challenge:</strong> a contest where a simulated arm has to insert a connector into a port. I inferenced a “cheatcode” policy for creating expert episodes along with teleoping episodes in gazebo sim, creating a 247 episode finetuning dataset for SmolVLA, pi0.5, and ACT. </li>
+            <li><strong>Project 1 — AIC Challenge:</strong> a contest where a simulated arm has to insert a connector into a port. I inferenced a “cheatcode” policy for creating expert episodes along with teleoping episodes in gazebo sim, creating a 473 episode finetuning dataset for SmolVLA, pi0.5, and ACT. </li>
             <li><strong>Project 2 — SO100 Video-Action Model:</strong> the biggest project. Using <a href="https://github.com/mimic-video/mimic-video" target="_blank" rel="noreferrer">Mimic</a>, I built a policy for the cheap SO100 arm that takes just a single camera image plus a text instruction and outputs action trajectories, then inferenced on the real arm to perform the task. Compared to standard VLAs that require a lot of teleoperation videos, Mimic video policy can predict actions much more efficiently.</li>
             <li><strong>Project 3 — reBot arm:</strong> Using and setting up a different heavier industrial precision arm(SeeedStudio), collecting data with it, and running MolmoAct on it to perform various household tasks.</li>
           </ul>
@@ -62,7 +62,7 @@
             <li><a href="https://arxiv.org/pdf/1011.0686" target="_blank" rel="noreferrer"><strong>DAgger (Dataset Aggregation)</strong></a> - An imitation-learning method that fixes behavior cloning's compounding-error problem. We used an “expert” policy, cheatcode, known as  a"cheating" solution that uses the poses of the plug and port to calculate target poses, effectively giving the ground-truth solution. Round 1 is pure expert; in later rounds the student policy drives more and more of the time, but the expert still supplies the correct label for whatever state the student lands in. A mixing weight β shrinks each round (≈1.0 → 0.3), so the student learns to recover from its own mistakes. Each round trains on all prior rounds combined.</li>
             <li><strong>Video-Action Model (VAM) / </strong><a href="https://arxiv.org/pdf/2512.15692" target="_blank" rel="noreferrer"><strong>mimic-video</strong></a> - A two-part policy. A large video backbone (Cosmos-Predict2 2B from Nvidia), pretrained on internet video and finetuned on community SO100 data predicts a short "visual plan" of what should happen next; a small, trainable action decoder reads that plan and outputs an action chunk (joint targets). It needs very little data to fine-tune the full model, and its output space is whatever you train it on — here, SO100 joints(can be done with other robots as well(franka)).</li>
             <li><strong>VLA / MolmoAct2 - </strong>A vision-language-action model from Allen Institute trained on 3.3 million samples that was used for YAM arms and so100 arms with good success rates, hence why I used it for my so100 and reBot arms(reBot is similar to YAM).</li>
-            <li><strong>LoRA -</strong> A cheap fine-tuning trick: instead of retraining a giant model's weights, you train a small add-on and merge it in afterward. Fast, low-memory, and basically nudges a big model toward a new action/task/domain.</li>
+            <li><strong>LoRA -</strong> A little fine-tuning trick: instead of retraining a giant model's weights, you train a small add-on and merge it in afterward. Fast, low-memory, and basically nudges a big model toward a new action/task/domain.</li>
           </ul>
         </div>
       </section>
@@ -74,7 +74,7 @@
           <p>AIC was a contest organized by Intrinsic (subsidiary of Google Alphabet) targeting a high-value bottleneck in modern manufacturing: electronics assembly. More specifically dexterous cable management and insertion, which today is a manual, repetitive process. In terms of robotics, this task is notoriously difficult due to the complex physics of flexible cables and the precision required to see, handle and carefully insert connectors.</p>
           <p>The goal was to train an AI model collecting data with open-source simulators (e.g. Gazebo), leveraging ROS for communication, with the simulated arm inserting a connector into the port (connector types SFP and SC, across a few "trials"). My goal was to get a high enough accuracy score to qualify for the next stage of real-life deployment.</p>
           <h3>3.2 Collecting Data</h3>
-          <p>Inferenced with <a href="https://github.com/intrinsic-dev/aic/blob/main/aic_example_policies/README.md#2-cheatcode---ground-truth-policy" target="_blank" rel="noreferrer">Cheatcode policy</a> to get “perfect” episodes as training data for the task. For more variance in the data, also teleoperated 50 episodes in simulation(gazebo). Had a total of <a href="https://huggingface.co/datasets/pranavsaroha/aic-cheatcode_and_teleop_v3" target="_blank" rel="noreferrer">247 episodes dataset</a> for finetuning.</p>
+          <p>Inferenced with <a href="https://github.com/intrinsic-dev/aic/blob/main/aic_example_policies/README.md#2-cheatcode---ground-truth-policy" target="_blank" rel="noreferrer">Cheatcode policy</a> to get “perfect” episodes as training data for the task. For more variance in the data, also teleoperated 50 episodes in simulation(gazebo). Had a total of <a href="https://huggingface.co/datasets/pranavsaroha/aic-cheatcode_and_teleop_v3" target="_blank" rel="noreferrer">473 episodes dataset</a> for finetuning.</p>
           <h3>3.3 Training</h3>
           <p>Trained several policies including ACT, pi0.5, SmolVLA using <a href="https://huggingface.co/docs/lerobot/en/act" target="_blank" rel="noreferrer">LeRobot</a> on RTX 5090. ACT worked best for now(would later use diffusion policy instead).</p>
           <h3>3.4 Inferencing</h3>
@@ -92,7 +92,7 @@
           <h2>4. Project 2 — SO100 Video-Action Model</h2>
           <p><strong>Goal:</strong> Extend the VAM (mimic-video) for the SO100 arm that takes one camera image plus a text instruction ("put the cubes in the tray") and outputs a joint trajectory. </p>
           <h3>4.1 Choosing the approach</h3>
-          <p>I first evaluated NVIDIA's Cosmos Predict 2.5, but its action output only supports ten fixed robot embodiments(10D) while SO100 supports (7D) — it can't produce SO100 actions without retraining the whole model. So I switched to the <a href="https://github.com/mimic-video/mimic-video" target="_blank" rel="noreferrer">mimic-video VAM</a>, which is a combination of LLM for task description, <a href="https://github.com/nvidia-cosmos/cosmos-predict2.5" target="_blank" rel="noreferrer">cosmos-predict2</a>  backbone as video model + small trainable action decoder (figure below)</p>
+          <p>I first evaluated NVIDIA's Cosmos 3 but its action output only supports ten fixed robot embodiments(10D) while SO100 supports (7D) — it can't produce SO100 actions without retraining the whole model. So I switched to the <a href="https://github.com/mimic-video/mimic-video" target="_blank" rel="noreferrer">mimic-video VAM</a>, which is a combination of LLM for task description, <a href="https://github.com/nvidia-cosmos/cosmos-predict2.5" target="_blank" rel="noreferrer">cosmos-predict2.5</a>  backbone as video model + small trainable action decoder (figure below)</p>
           <figure class="report-figure wide">
             <img src="../assets/mimic-video-architecture.png" alt="Mimic-Video architecture showing the video model backbone and action decoder" loading="lazy">
             <figcaption>Source: <a href="https://mimic-video.github.io/" target="_blank" rel="noreferrer">https://mimic-video.github.io/</a></figcaption>
@@ -109,7 +109,7 @@
           <p>Because the decoder reads the backbone's features, I retrained the decoder against the fine-tuned backbone (its loss dropped steadily as it learned). Link to decoder finetuning run: <a href="https://wandb.ai/sarohapranav-robotics/vam/runs/w2a_so100_ft3_v2w_so100_lora_rank256_withtask_iter10000_fused_lr1.000e-04_layer20_bsz128?nw=nwusersarohapranav" target="_blank" rel="noreferrer">https://wandb.ai/sarohapranav-robotics/vam/runs/w2a_so100_ft3_v2w_so100_lora_rank256_withtask_iter10000_fused_lr1.000e-04_layer20_bsz128?nw=nwusersarohapranav</a></p>
           <h3>4.6 Results and Learnings</h3>
           <ul class="resource-list">
-            <li><a href="https://drive.google.com/file/d/1jtOhh29o8MlRbOitPWE5rIBQf1MGWLWZ/view?usp=sharing" target="_blank" rel="noreferrer">Real episode</a></li>
+            <li><a href="https://drive.google.com/file/d/1jtOhh29o8MlRbOitPWE5rIBQf1MGWLWZ/view?usp=sharing" target="_blank" rel="noreferrer">Original episode</a></li>
             <li><a href="https://github.com/user-attachments/assets/3adac5a7-fd50-4b0a-bffd-9cc7565fff15" target="_blank" rel="noreferrer">Predicted Video (with finetuned Cosmos-Predict2 backbone)</a></li>
             <li><a href="https://github.com/user-attachments/assets/215c6812-dce6-4f97-bd9c-ee70023642fa" target="_blank" rel="noreferrer">Decoder inference video</a></li>
           </ul>
@@ -146,8 +146,8 @@
         <div class="section-content">
           <h2>6. What I learned over the summer</h2>
           <ul class="learning-list">
-            <li><strong>System Setups and Environments are the bulk of the work.</strong> Getting a new GPU supported(RTX 5090 pytorch package compatibility with cu128), bridging conflicting environments across projects with conda/uv setup, tracing a broken wire(reBot DAMIAO 2nd port loose forever), making sure wandb is setup to collect training metrics, ensuring the arms calibration remains same between training and inference steps —small but important things to get right consistently, all take time.</li>
-            <li><strong>World models are there, but fine tuning on specific embodiments still matters </strong>- There is a lot of progress in the last year on world models being able to do long horizon tasks with promising results, but robot embodiment is still needed. You still need to finetune for your specific arm embodiment as I experienced with both Video action model for So100 and MolmoAct2 for the ReBot arm</li>
+            <li><strong>System Setups and Environments are the bulk of the work.</strong> Getting a new GPU supported(RTX 5090 pytorch package compatibility with cu128), bridging conflicting environments across projects with conda/uv setup, tracing a broken wire(reBot DAMIAO 2nd port loose forever), making sure wandb is setup to collect training metrics, ensuring the arms calibration remains same between training and inference steps: all sort of small but important things to get right consistently, all take time.</li>
+            <li><strong>World models are there, but fine tuning on specific embodiments is still needed</strong>- There is a lot of progress in the last year on world models being able to do long horizon tasks with promising results, but robot embodiment is still needed. You still need to finetune for your specific arm embodiment as I experienced with both Video action model for So100 and MolmoAct2 for the ReBot arm</li>
             <li><strong>Community Support</strong> - All my learnings have been a result of reaching out to the community, opening github issues (eg: mimic-video), participating in robotics challenge (AIC challenge), sharing work on forums (discourse), attending talk by MolmoAct2 creators (Jiafei Duan and Haoquan Fang), reaching out to mentors for advice (Dhruv my internship mentor), and heavily using lerobot open-source library. </li>
           </ul>
         </div>
